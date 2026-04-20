@@ -1,0 +1,288 @@
+
+<style>
+:root {
+  --yt-red: #ff0000;
+  --yt-red-dark: #cc0000;
+  --yt-dark: #0f0f0f;
+  --yt-dark2: #1a1a1a;
+  --yt-dark3: #272727;
+  --yt-border: #3f3f3f;
+  --yt-text: #f1f1f1;
+  --yt-text-muted: #aaaaaa;
+  --yt-stat-bg: #272727;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.yt-wrap { background: var(--yt-dark); border-radius: 12px; padding: 1.25rem 1.25rem 1.5rem; font-family: 'Roboto', var(--font-sans), sans-serif; color: var(--yt-text); }
+.yt-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--yt-border); }
+.yt-logo { display: flex; align-items: center; gap: 8px; }
+.yt-logo-icon { width: 32px; height: 22px; background: var(--yt-red); border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.yt-logo-icon svg { width: 14px; height: 14px; }
+.yt-logo-text { font-size: 17px; font-weight: 500; color: var(--yt-text); letter-spacing: -0.3px; }
+.yt-api-row { display: flex; gap: 8px; align-items: center; margin-bottom: 1rem; }
+.yt-api-row input { flex: 1; background: var(--yt-dark3); border: 1px solid var(--yt-border); border-radius: 4px; color: var(--yt-text); font-size: 13px; font-family: var(--font-mono); padding: 7px 10px; outline: none; height: 36px; }
+.yt-api-row input:focus { border-color: var(--yt-text-muted); }
+.yt-api-row input::placeholder { color: var(--yt-border); }
+.yt-btn { background: var(--yt-dark3); border: 1px solid var(--yt-border); border-radius: 18px; color: var(--yt-text); font-size: 13px; font-weight: 500; padding: 6px 14px; cursor: pointer; white-space: nowrap; font-family: 'Roboto', var(--font-sans), sans-serif; transition: background 0.15s; height: 36px; }
+.yt-btn:hover { background: var(--yt-border); }
+.yt-btn:active { transform: scale(0.97); }
+.yt-btn.red { background: var(--yt-red); border-color: var(--yt-red); color: #fff; border-radius: 4px; }
+.yt-btn.red:hover { background: var(--yt-red-dark); border-color: var(--yt-red-dark); }
+.yt-btn.saved { background: #1a3a1a; border-color: #2a5a2a; color: #5af07a; }
+.yt-btn.copied { background: #1a3a1a; border-color: #2a5a2a; color: #5af07a; }
+.yt-label { font-size: 12px; color: var(--yt-text-muted); margin-bottom: 6px; }
+.yt-textarea { width: 100%; height: 90px; background: var(--yt-dark3); border: 1px solid var(--yt-border); border-radius: 4px; color: var(--yt-text); font-size: 12px; font-family: var(--font-mono); padding: 9px 11px; resize: vertical; outline: none; line-height: 1.6; }
+.yt-textarea:focus { border-color: var(--yt-text-muted); }
+.yt-textarea::placeholder { color: var(--yt-border); }
+.fetch-row { margin-top: 8px; }
+.fetch-row .yt-btn.red { width: 100%; border-radius: 4px; font-size: 14px; height: 40px; }
+.results { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 14px; }
+.yt-card { background: var(--yt-dark2); border: 1px solid var(--yt-border); border-radius: 8px; padding: 1rem 1.1rem; }
+.card-top { display: flex; gap: 12px; margin-bottom: 12px; }
+.thumb-col { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; width: 112px; }
+.thumb-wrap { position: relative; width: 112px; cursor: pointer; border-radius: 6px; overflow: hidden; }
+.thumb-wrap:hover .thumb-overlay { opacity: 1; }
+.thumb { width: 112px; height: 63px; object-fit: cover; display: block; background: var(--yt-dark3); }
+.thumb-placeholder { width: 112px; height: 63px; background: var(--yt-dark3); border-radius: 6px; }
+.thumb-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; }
+.thumb-overlay span { font-size: 11px; color: #fff; font-weight: 500; background: var(--yt-red); padding: 3px 8px; border-radius: 3px; }
+.thumb-url-btn { width: 112px; background: var(--yt-dark3); border: 1px solid var(--yt-border); border-radius: 4px; color: var(--yt-text-muted); font-size: 11px; font-weight: 500; padding: 4px 0; cursor: pointer; font-family: 'Roboto', var(--font-sans), sans-serif; transition: background 0.12s; text-align: center; }
+.thumb-url-btn:hover { background: var(--yt-border); color: var(--yt-text); }
+.thumb-url-btn.copied { background: #1a3a1a; border-color: #2a5a2a; color: #5af07a; }
+.card-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.meta-row { display: flex; align-items: center; gap: 6px; }
+.meta-lbl { font-size: 11px; color: var(--yt-text-muted); white-space: nowrap; flex-shrink: 0; width: 52px; }
+.meta-val-btn { flex: 1; min-width: 0; font-size: 13px; font-weight: 500; color: var(--yt-text); background: none; border: none; padding: 3px 7px; border-radius: 4px; text-align: left; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Roboto', var(--font-sans), sans-serif; transition: background 0.12s; }
+.meta-val-btn:hover { background: var(--yt-dark3); }
+.meta-val-btn.copied { color: #5af07a; background: #1a3a1a; }
+.divider { border: none; border-top: 1px solid var(--yt-border); margin: 10px 0; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; margin-bottom: 12px; }
+.stat { background: var(--yt-stat-bg); border-radius: 6px; padding: 8px 10px; }
+.stat-lbl { font-size: 10px; color: var(--yt-text-muted); margin-bottom: 3px; }
+.stat-val { font-size: 13px; font-weight: 500; color: var(--yt-text); }
+.stat-val.hot { color: #ff6b6b; }
+.card-actions { display: flex; gap: 7px; justify-content: flex-end; flex-wrap: wrap; }
+.yt-error { background: #2a1a1a; border: 1px solid #5a2a2a; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #f07070; }
+.yt-loading { background: var(--yt-dark2); border: 1px solid var(--yt-border); border-radius: 8px; padding: 14px; font-size: 13px; color: var(--yt-text-muted); }
+.toast-bar { margin-top: 1rem; min-height: 32px; text-align: center; font-size: 12px; color: #5af07a; opacity: 0; transition: opacity 0.2s; }
+.toast-bar.show { opacity: 1; }
+</style>
+
+<div class="yt-wrap">
+  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">YouTube動画情報コピペツール</h2>
+  <div class="yt-header">
+    <div class="yt-logo">
+      <div class="yt-logo-icon">
+        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="5,3 11,7 5,11" fill="white"/></svg>
+      </div>
+      <span class="yt-logo-text">動画の情報コピペツール</span>
+    </div>
+  </div>
+  <div class="yt-api-row">
+    <input type="password" id="apiKey" placeholder="YouTube Data API v3 キーを入力" autocomplete="off" />
+    <button class="yt-btn" id="saveKey">保存</button>
+  </div>
+  <div style="margin-bottom: 1rem;">
+    <div class="yt-label">YouTubeリンクを貼り付け（複数可・改行区切り）</div>
+    <textarea class="yt-textarea" id="urlInput" placeholder="https://www.youtube.com/watch?v=xxxxx&#10;https://youtu.be/yyyyy"></textarea>
+    <div class="fetch-row"><button class="yt-btn red" id="fetchBtn">情報を取得</button></div>
+  </div>
+  <div class="results" id="results"></div>
+  <div class="toast-bar" id="toast"></div>
+</div>
+
+<script>
+let savedKey = '';
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+function copyTextStr(text, btn, original) {
+  navigator.clipboard.writeText(text).then(() => {
+    if (btn) { btn.textContent = '✓ コピー済み'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1800); }
+    showToast('コピーしました');
+  });
+}
+async function copyImageFromUrl(url, btn) {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    let pngBlob = blob;
+    if (blob.type !== 'image/png') {
+      const bmp = await createImageBitmap(blob);
+      const canvas = document.createElement('canvas');
+      canvas.width = bmp.width; canvas.height = bmp.height;
+      canvas.getContext('2d').drawImage(bmp, 0, 0);
+      pngBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    }
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
+    const sp = btn.querySelector('.thumb-overlay span');
+    if (sp) { sp.textContent = '画像コピー済み ✓'; setTimeout(() => { sp.textContent = '画像をコピー'; }, 1800); }
+    showToast('サムネ画像をコピーしました');
+  } catch(e) { showToast('画像コピー失敗（ブラウザ非対応の場合があります）'); }
+}
+function extractVideoId(url) {
+  url = url.trim(); let m;
+  m = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/); if (m) return m[1];
+  m = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/); if (m) return m[1];
+  m = url.match(/shorts\/([a-zA-Z0-9_-]{11})/); if (m) return m[1];
+  m = url.match(/embed\/([a-zA-Z0-9_-]{11})/); if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+  return null;
+}
+function formatNum(n) {
+  n = parseInt(n,10); if(isNaN(n)) return '—';
+  if(n>=100000000) return (n/100000000).toFixed(1).replace(/\.0$/,'')+'億回';
+  if(n>=10000) return (n/10000).toFixed(1).replace(/\.0$/,'')+'万回';
+  return n.toLocaleString('ja-JP')+'回';
+}
+function formatSubs(n) {
+  n = parseInt(n,10); if(isNaN(n)) return '—';
+  if(n>=100000000) return (n/100000000).toFixed(1).replace(/\.0$/,'')+'億人';
+  if(n>=10000) return (n/10000).toFixed(1).replace(/\.0$/,'')+'万人';
+  return n.toLocaleString('ja-JP')+'人';
+}
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso), now = new Date();
+  const diffDays = Math.floor((now - d) / 86400000);
+  const label = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+  let ago = '';
+  if (diffDays < 1) {
+    ago = '今日';
+  } else if (diffDays < 7) {
+    ago = `${diffDays}日前`;
+  } else if (diffDays < 31) {
+    ago = `${Math.floor(diffDays/7)}週間前`;
+  } else {
+    const totalMonths = (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth());
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+    if (years === 0) {
+      ago = `${months}ヶ月前`;
+    } else if (months === 0) {
+      ago = `${years}年前`;
+    } else {
+      ago = `${years}年${months}ヶ月前`;
+    }
+  }
+  return `${label}（${ago}）`;
+}
+function calcMultiplier(rv,rs) {
+  const v=parseInt(rv,10),s=parseInt(rs,10);
+  if(isNaN(v)||isNaN(s)||s===0) return null;
+  return (v/s).toFixed(2);
+}
+function makeCard(data) {
+  const div = document.createElement('div');
+  div.className = 'yt-card';
+  const multi = calcMultiplier(data.rawViews, data.rawSubs);
+  const multiStr = multi !== null ? `${multi}倍` : '—';
+  const isHot = multi !== null && parseFloat(multi) >= 1;
+  const planText = [`チャンネル登録者：${data.subs}`,`再生数：${data.views}`,`公開：${data.pubDate}`,`登録者比 再生倍率：${multiStr}`].join('\n');
+  const allText = [`タイトル：${data.title}`,`チャンネル：${data.channel}`,`チャンネル登録者：${data.subs}`,`再生数：${data.views}`,`登録者比 再生倍率：${multiStr}`,`公開：${data.pubDate}`,`サムネURL：${data.thumb}`].join('\n');
+  div.innerHTML = `
+    <div class="card-top">
+      <div class="thumb-col">
+        <div class="thumb-wrap">
+          ${data.thumb ? `<img class="thumb" src="${data.thumb}" alt="" loading="lazy" crossorigin="anonymous" />` : '<div class="thumb-placeholder"></div>'}
+          ${data.thumb ? `<div class="thumb-overlay"><span>画像をコピー</span></div>` : ''}
+        </div>
+        ${data.thumb ? `<button class="thumb-url-btn">URLをコピー</button>` : ''}
+      </div>
+      <div class="card-meta">
+        <div class="meta-row">
+          <span class="meta-lbl">タイトル</span>
+          <button class="meta-val-btn" data-copy="${encodeURIComponent(data.title)}">${data.title}</button>
+        </div>
+        <div class="meta-row">
+          <span class="meta-lbl">チャンネル</span>
+          <button class="meta-val-btn" data-copy="${encodeURIComponent(data.channel)}">${data.channel}</button>
+        </div>
+      </div>
+    </div>
+    <hr class="divider" />
+    <div class="stats">
+      <div class="stat"><div class="stat-lbl">チャンネル登録者</div><div class="stat-val">${data.subs}</div></div>
+      <div class="stat"><div class="stat-lbl">再生数</div><div class="stat-val">${data.views}</div></div>
+      <div class="stat"><div class="stat-lbl">登録者比 再生倍率</div><div class="stat-val ${isHot?'hot':''}">${multiStr}</div></div>
+      <div class="stat"><div class="stat-lbl">公開日</div><div class="stat-val" style="font-size:11px;">${data.pubDate}</div></div>
+    </div>
+    <div class="card-actions">
+      <button class="yt-btn link-btn" data-url="${data.url}">元動画を開く</button>
+      <button class="yt-btn plan-btn">企画用コピー</button>
+      <button class="yt-btn red all-btn">まとめてコピー</button>
+    </div>
+  `;
+  if (data.thumb) {
+    div.querySelector('.thumb-wrap').addEventListener('click', function() { copyImageFromUrl(data.thumb, this); });
+    div.querySelector('.thumb-url-btn').addEventListener('click', function() { copyTextStr(data.thumb, this, 'URLをコピー'); });
+  }
+  div.querySelectorAll('.meta-val-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const prev = this.textContent;
+      copyTextStr(decodeURIComponent(this.dataset.copy), null);
+      this.classList.add('copied'); this.textContent = '✓ コピー済み';
+      setTimeout(() => { this.textContent = prev; this.classList.remove('copied'); }, 1800);
+    });
+  });
+  div.querySelector('.link-btn').addEventListener('click', function() { window.open(this.dataset.url, '_blank'); });
+  div.querySelector('.plan-btn').addEventListener('click', function() { copyTextStr(planText, this, '企画用コピー'); });
+  div.querySelector('.all-btn').addEventListener('click', function() { copyTextStr(allText, this, 'まとめてコピー'); });
+  return div;
+}
+async function fetchVideos(ids, key) {
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${ids.join(',')}&key=${key}`);
+  if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'API エラー'); }
+  return (await res.json()).items || [];
+}
+async function fetchChannelSubs(cids, key) {
+  if (!cids.length) return {};
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${cids.join(',')}&key=${key}`);
+  if (!res.ok) return {};
+  const map = {};
+  ((await res.json()).items||[]).forEach(c => { map[c.id] = c.statistics?.subscriberCount; });
+  return map;
+}
+document.getElementById('saveKey').addEventListener('click', () => {
+  const v = document.getElementById('apiKey').value.trim();
+  if (!v) return;
+  savedKey = v;
+  const btn = document.getElementById('saveKey');
+  btn.textContent = '✓ 保存済み'; btn.classList.add('saved');
+});
+document.getElementById('apiKey').addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('saveKey').click(); });
+document.getElementById('fetchBtn').addEventListener('click', async () => {
+  const key = savedKey || document.getElementById('apiKey').value.trim();
+  if (!key) { alert('APIキーを入力してください'); return; }
+  savedKey = key;
+  const raw = document.getElementById('urlInput').value;
+  const lines = raw.split(/[\n,]+/).map(l=>l.trim()).filter(Boolean);
+  const pairs = lines.map(l=>({url:l,id:extractVideoId(l)})).filter(p=>p.id);
+  const invalids = lines.filter(l=>!extractVideoId(l));
+  const resultsEl = document.getElementById('results');
+  resultsEl.innerHTML = '';
+  if (!pairs.length) { resultsEl.innerHTML='<div class="yt-error">有効なYouTubeリンクが見つかりませんでした。</div>'; return; }
+  const loading = document.createElement('div');
+  loading.className='yt-loading'; loading.textContent=`${pairs.length}件の動画情報を取得中...`;
+  resultsEl.appendChild(loading);
+  try {
+    const allItems=[];
+    for(let i=0;i<pairs.length;i+=50) allItems.push(...await fetchVideos(pairs.slice(i,i+50).map(p=>p.id),key));
+    const cids=[...new Set(allItems.map(v=>v.snippet?.channelId).filter(Boolean))];
+    const subsMap=await fetchChannelSubs(cids,key);
+    resultsEl.innerHTML='';
+    if(invalids.length){const w=document.createElement('div');w.className='yt-error';w.textContent=`スキップしたURL: ${invalids.join(', ')}`;resultsEl.appendChild(w);}
+    const itemMap={};
+    allItems.forEach(v=>{itemMap[v.id]=v;});
+    pairs.forEach(p=>{
+      const v=itemMap[p.id];
+      if(!v){const e=document.createElement('div');e.className='yt-error';e.textContent=`取得失敗: ${p.url}`;resultsEl.appendChild(e);return;}
+      const sn=v.snippet||{},st=v.statistics||{};
+      const rawSubs=subsMap[sn.channelId];
+      resultsEl.appendChild(makeCard({url:p.url,title:sn.title||'（タイトル不明）',channel:sn.channelTitle||'—',thumb:sn.thumbnails?.medium?.url||sn.thumbnails?.default?.url||'',views:formatNum(st.viewCount),subs:formatSubs(rawSubs),pubDate:formatDate(sn.publishedAt),rawViews:st.viewCount,rawSubs}));
+    });
+  } catch(e) { resultsEl.innerHTML=`<div class="yt-error">エラー: ${e.message}</div>`; }
+});
+</script>
